@@ -8,6 +8,7 @@ import com.example.foodapp.Util.DiffUtilExt
 import com.example.foodapp.databinding.ItemRvMainCategoryBinding
 import com.example.foodapp.fragments.home.HomeAdapter.MyViewHolder
 import com.example.foodapp.model.Recipe
+import com.example.foodapp.model.Result
 
 class HomeAdapter(val onMainClick: (Recipe) -> Unit) :RecyclerView.Adapter<MyViewHolder>() {
 

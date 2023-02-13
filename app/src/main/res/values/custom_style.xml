@@ -2,7 +2,7 @@
 <resources>
     <style name="Circular">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">50%</item>
+        <item name="cornerSize">60%</item>
 
     </style>
     <style name="RoundedSquare">
@@ -26,6 +26,29 @@
 
         <item name="cornerSizeBottomLeft">80dp</item>
         <item name="cornerFamilyBottomLeft">rounded</item>
+
+    </style>
+    <style name="SpecificCornerCutRounded">
+
+        <item name="cornerSizeBottomLeft">50dp</item>
+        <item name="cornerFamilyBottomLeft">rounded</item>
+
+    </style>
+
+
+
+    <style name="CardViewStyle" parent="@style/Widget.MaterialComponents.CardView">
+
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners</item>
+    </style>
+    <style name="ShapeAppearanceOverlay_card_custom_corners" parent="">
+        <item name="cornerFamilyTopRight">rounded</item>
+        <item name="cornerSizeTopRight">90dp</item>
+        <item name="cornerFamilyTopLeft">rounded</item>
+
+        <item name="cornerSizeTopLeft"></item>
+
+
 
     </style>
 </resources>

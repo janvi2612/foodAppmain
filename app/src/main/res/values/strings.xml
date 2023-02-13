@@ -10,5 +10,6 @@
     <string name="percentage_formatt">(%1$s%%)</string>
     <string name="see_details">See details</string>
     <string name="ingredients">Ingredients</string>
+    <string name="percentage_format">(%1$s%%)</string>
 
 </resources>

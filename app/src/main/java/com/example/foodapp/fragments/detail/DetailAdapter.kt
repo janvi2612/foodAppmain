@@ -11,13 +11,13 @@ import com.example.foodapp.model.ExtendedIngredient
 
 class DetailAdapter :RecyclerView.Adapter<DetailAdapter.MyViewHolder>() {
     private var itemList= emptyList<ExtendedIngredient>()
-    private val limit = 5
+    private val limit = 7
     class MyViewHolder(private val binding : CustomIndigredentsBinding):RecyclerView.ViewHolder(binding.root) {
       fun bind(currentItem : ExtendedIngredient){
           binding.ingredientModel = currentItem
       }
         companion object{
-            fun from(parent: ViewGroup): DetailAdapter.MyViewHolder {
+            fun from(parent: ViewGroup): MyViewHolder {
                 val layoutManager = LayoutInflater.from(parent.context)
                 val binding= CustomIndigredentsBinding.inflate(layoutManager,parent,false)
                 return DetailAdapter.MyViewHolder(binding)

@@ -25,5 +25,17 @@
         <action
             android:id="@+id/action_detailFragment_to_homeFragment3"
             app:destination="@id/homeFragment3" />
+        <action
+            android:id="@+id/action_detailFragment_to_listIngredientsFragment"
+            app:destination="@id/listIngredientsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/listIngredientsFragment"
+        android:name="com.example.foodapp.fragments.listingridents.ListIngredientsFragment"
+        android:label="ListIngredientsFragment"
+        tools:layout="@layout/fragment_listingredients">
+    <argument
+        android:name="id"
+        app:argType="integer" />
     </fragment>
 </navigation>

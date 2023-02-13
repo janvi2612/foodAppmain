@@ -8,19 +8,22 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+
 interface ApiService {
-    @GET("recipes/complexSearch?apiKey=9d1751511fdd4ef0b31098f7a87264ec")
+    @GET("recipes/complexSearch?apiKey=4cd93b1b1eea49b89d849a06fd60a6c7")
     suspend fun getQuery(@Query("query") query: String): Response<com.example.foodapp.model.Result>
 
 
-    @GET("recipes/complexSearch?apiKey=9d1751511fdd4ef0b31098f7a87264ec&query=salad&number=20")
+    @GET("recipes/complexSearch?apiKey=4cd93b1b1eea49b89d849a06fd60a6c7&number=15")
     suspend fun getAllRecipe() : Response<com.example.foodapp.model.Result>
 
-    @GET("recipes/{id}/information?includeNutrition=true&apiKey=9d1751511fdd4ef0b31098f7a87264ec")
+    @GET("recipes/{id}/information?includeNutrition=true&apiKey=4cd93b1b1eea49b89d849a06fd60a6c7")
     suspend fun getRecipeDetail(
         @Path("id") id:Int
     ): Response<Detail>
-    @GET("recipes/716429/information?includeNutrition=false&apiKey=9d1751511fdd4ef0b31098f7a87264ec")
+
+
+    @GET("recipes/716429/information?includeNutrition=false&apiKey=4cd93b1b1eea49b89d849a06fd60a6c7")
     suspend fun getRecipe() : Response<Recipe>
 
 

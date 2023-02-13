@@ -1,15 +1,18 @@
-package com.example.foodapp.Util
+package com.example.startertemplate.utils
 
-import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
-import com.example.foodapp.R
 import com.example.foodapp.model.BaseResponse
+import com.example.foodapp.R
+import com.example.foodapp.Util.*
+import com.example.foodapp.model.Detail
 import com.google.gson.GsonBuilder
 import retrofit2.Response
 import timber.log.Timber
@@ -17,7 +20,7 @@ import timber.log.Timber
 open class BaseViewModel(application: Application) : AndroidViewModel(application) {
     var context = application
 
-    @SuppressLint("NewApi")
+    @RequiresApi(Build.VERSION_CODES.M)
     fun isConnected(showMessage: Boolean = false): Boolean {
         val connectivityManager =
             getApplication<Application>().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -46,7 +49,7 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     val gson = GsonBuilder().create()
-    fun <T> handleResponse(response: Response<T>): NetworkResult<T> {
+    fun <T> handleResponse(response: Response<T>): NetworkResult<T>? {
         return when {
             response.message().toString().contains("timeout") -> {
                 NetworkResult.Error("Timeout")

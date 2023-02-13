@@ -2,17 +2,17 @@
 <layout xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <data></data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".fragments.home.HomeFragment">
 
-        <!-- TODO: Update blank fragment layout -->
-        <androidx.recyclerview.widget.RecyclerView
+
+        <com.todkars.shimmer.ShimmerRecyclerView
             android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
@@ -21,8 +21,33 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5"
             app:spanCount="2"
+            app:shimmer_recycler_layout="@layout/shimmer_layout"
+            android:layout_marginTop="60dp"
             tools:itemCount="10"
             tools:listitem="@layout/item_rv_main_category" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="5dp"
+            app:cardCornerRadius="10dp"
+            tools:ignore="MissingConstraints">
+
+
+            <SearchView
+                android:id="@+id/searchview"
+                android:layout_width="427dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/search_btn"
+                android:iconifiedByDefault="false"
+                android:queryHint="search"
+                android:theme="@style/ThemeOverlay.Search" />
+
+
+
+        </androidx.cardview.widget.CardView>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,5 @@
 package com.example.foodapp.api
+
 import androidx.databinding.ktx.BuildConfig
 import com.example.foodapp.Util.Constant.Companion.BASE_URL
 import com.example.foodapp.repository.Repository
@@ -14,17 +15,18 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
+
 @Module
 @InstallIn(SingletonComponent::class)
 object RetrofitInstance {
+    //this code for check log
+    val logging = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+
     @Singleton
     @Provides
-    fun provideHttpClient():OkHttpClient{
-
-        val logging = HttpLoggingInterceptor()
-        if (BuildConfig.DEBUG) {
-            logging.level = HttpLoggingInterceptor.Level.BODY
-        }
+    fun provideHttpClient(): OkHttpClient {
 
         return OkHttpClient.Builder()
             .readTimeout(15, TimeUnit.SECONDS)
@@ -35,7 +37,7 @@ object RetrofitInstance {
 
     @Singleton
     @Provides
-    fun provideConverterFactory():GsonConverterFactory{
+    fun provideConverterFactory(): GsonConverterFactory {
         return GsonConverterFactory.create()
     }
 
@@ -51,15 +53,17 @@ object RetrofitInstance {
             .addConverterFactory(gsonConverterFactory)
             .build()
     }
+
     @Singleton
     @Provides
-    fun provideRecipeApiService(retrofit: Retrofit): ApiService {
+    fun provideRecipeApiSrvice(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
     }
+
     @Singleton
     @Provides
-    fun provideRecipeDataSource(apiService: ApiService) : Repository{
-        return Repository(apiService)
+    fun provideRecipeDataSource(simpleApi: ApiService): Repository {
+        return Repository(simpleApi)
     }
-
 }
+

@@ -1,48 +1,76 @@
 package com.example.foodapp.fragments.home
 
 import android.app.Application
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.lifecycle.*
 import com.example.foodapp.R
 
+import com.example.foodapp.Util.NetworkResult
+import com.example.foodapp.model.Result
+
 import com.example.foodapp.repository.Repository
+import com.example.startertemplate.utils.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import timber.log.Timber
 import javax.inject.Inject
+
+@RequiresApi(Build.VERSION_CODES.M)
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val repository: Repository,application: Application):ViewModel() {
-    val myResponse2: MutableLiveData<com.example.foodapp.model.Result> = MutableLiveData()
-    val myResponse5: MutableLiveData<com.example.foodapp.model.Result> = MutableLiveData()
+class HomeViewModel @Inject constructor(private val repository: Repository,application: Application):
+    BaseViewModel(application) {
+
     private val mContext=application
-    fun getPost() {
-        viewModelScope.launch {
-            viewModelScope.launch {
-            val response : Response<com.example.foodapp.model.Result> =repository.getQuery(query="salad")
-            if (response.isSuccessful) {
-                response.body().let {
-                    myResponse2.value=it
-                }
-            }
-        }
+    private val _myrresponse = MutableLiveData<NetworkResult<com.example.foodapp.model.Result>?>()
+    val myrresponse: MutableLiveData<NetworkResult<Result>?>
+        get() = _myrresponse
+
+
+
+
+    init {
+        Timber.e("init")
+        getAllReciperesponse()
     }
+    @RequiresApi(Build.VERSION_CODES.M)
+
+
+    fun getPost(query :String) {
+       viewModelScope.launch {
+           _myrresponse.value=NetworkResult.Loading()
+          if(isConnected()){
+              val response2 :Response<com.example.foodapp.model.Result> = repository.getQuery(query)
+              _myrresponse.value = handleResponse(response2)
+          }
+           else{
+              _myrresponse.value = NetworkResult.Error(
+                  mContext.getString(R.string.no_internet)
+              )
+          }
+       }
     }
-    fun getAllRecipe2(){
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun getAllReciperesponse() {
 
         viewModelScope.launch {
-            val response5 : Response<com.example.foodapp.model.Result> = repository.getAllRecipe()
-            if (response5.isSuccessful){
-                response5.body().let {
-                    myResponse5.value = it
-                }
+            _myrresponse.value=NetworkResult.Loading()
+            if(isConnected()){
+                val response3 :Response<com.example.foodapp.model.Result> = repository.getAllRecipe()
+                _myrresponse.value = handleResponse(response3)
             }
             else{
-                mContext.getString(R.string.no_internet)
+                _myrresponse.value = NetworkResult.Error(
+                    mContext.getString(R.string.no_internet)
+                )
             }
-
         }
 
+
     }
+
+
 }
 

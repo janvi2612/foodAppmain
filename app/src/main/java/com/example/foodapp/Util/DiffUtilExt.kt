@@ -1,6 +1,7 @@
 package com.example.foodapp.Util
 
 import androidx.recyclerview.widget.DiffUtil
+import com.example.foodapp.model.ExtendedIngredient
 
 
 class DiffUtilExt<T>(

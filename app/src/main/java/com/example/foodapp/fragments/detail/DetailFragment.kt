@@ -13,10 +13,13 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodapp.R
+import com.example.foodapp.Util.NetworkResult
 import com.example.foodapp.databinding.FragmentDetailBinding
+import com.example.foodapp.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -24,8 +27,10 @@ import timber.log.Timber
 @AndroidEntryPoint
 class DetailFragment : Fragment() {
 
-   private lateinit var binding: FragmentDetailBinding
-   private lateinit var adapter: DetailAdapter
+    private var _binding: FragmentDetailBinding? = null
+    private val binding get() = _binding!!
+
+    private lateinit var adapter: DetailAdapter
    private  val viewModel: DetailViewModel by viewModels()
     private val args by navArgs<DetailFragmentArgs>()
 
@@ -34,16 +39,20 @@ class DetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-         binding = FragmentDetailBinding.inflate(inflater, container, false)
+         _binding = FragmentDetailBinding.inflate(inflater, container, false)
 
         setupUi()
        setUpObservers()
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun setupUi() {
        adapter= DetailAdapter()
         binding.recycleviewIndi.layoutManager=LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+        binding.backbtn.setOnClickListener{
+            findNavController().navigateUp()
+        }
         binding.recycleviewIndi.adapter=adapter
         args.id.let {
             Timber.e(it.toString())
@@ -54,65 +63,90 @@ class DetailFragment : Fragment() {
   @RequiresApi(Build.VERSION_CODES.N)
   @SuppressLint("StringFormatInvalid", "SuspiciousIndentation")
     private fun setUpObservers() {
-     viewModel.myResponse.observe(viewLifecycleOwner, Observer {
-         it.let{
-             it.body().let{
-                 binding.dtlViewModel = it
-                 val decimalf= DecimalFormat("#.##")
-                 it?.nutrition?.nutrients?.forEach {
-                     //var per=it.amount!!*it.percentOfDailyNeeds!!/100
-                     when(it.name){
-                        " Carbohydrates " ->
-                        {
-                            Timber.e("Carbohydrates ${it.percentOfDailyNeeds}")
-                            binding.pgCarb.progress = it.percentOfDailyNeeds!!.toInt()
-                            binding.carbAmount.text = it.amount.toString()
-                            binding.carbUnit.text = it.unit
-                            binding.txtCarbs.text = this.resources.getString(R.string.percentage_formatt,decimalf.format(it.percentOfDailyNeeds))
-                        }
-                         "Fat" ->
-                         {
-                             Timber.e("Fats ${it.percentOfDailyNeeds}")
-                             binding.fatAmount.text=it.amount.toString()
-                             binding.pgFat.progress=it.percentOfDailyNeeds!!.toInt()
+      viewModel.myResponse.observe(viewLifecycleOwner, Observer {response->
+          when(response) {
+              is NetworkResult.Error<*> -> {
+                  response.message
+              }
+              is NetworkResult.Loading<*> -> {
 
-                             binding.fatUnit.text=it.unit
-                             binding.fatPer.text=this.resources.getString(R.string.percentage_formatt,decimalf.format(it.percentOfDailyNeeds))
-                         }
-                         "Protien" ->
-                         {
-                             Timber.e("Protien ${it.percentOfDailyNeeds}")
-                             binding.pgProtien.progress=it.percentOfDailyNeeds!!.toInt()
-                             binding.proAmount.text=it.amount.toString()
-                             binding.proUnit.text=it.unit
-                             binding.proPer.text=this.resources.getString(R.string.percentage_formatt,decimalf.format(it.percentOfDailyNeeds))
-                         }
-                         "Calories" -> {
-                             Timber.e("Calories ${it.percentOfDailyNeeds}")
-                             binding.pgCal.progress=it.percentOfDailyNeeds!!.toInt()
-                             binding.calAmount.text=it.amount.toString()
-                             binding.calUnit.text=it.unit
+              }
 
-                         }
-                     }
-                 }
-                 var url = it?.sourceUrl
-                 binding.SeedetailRecipe.setOnClickListener{
-                     var intent = Intent(Intent.ACTION_VIEW)
-                     intent.data = Uri.parse(url)
-                     startActivity(intent)
-                 }
-                 it?.extendedIngredients?.let {response->
-                     adapter.setData(response)
-                 }
+              is NetworkResult.Success<*> -> {
+                  response.data.let { detail ->
+                      binding.dtlViewModel = detail
+                      val decimalf = DecimalFormat("#.##")
+                      detail?.nutrition?.nutrients?.forEach { nut ->
+                          when (nut.name) {
+                              " Carbohydrate " -> {
+                                  Timber.e("Carbohydrates ${nut.percentOfDailyNeeds}")
+                                  binding.pgCarb.progress = nut.percentOfDailyNeeds!!.toInt()
+                                  binding.carbAmount.text = nut.amount.toString()
+                                  binding.carbUnit.text = nut.unit
+                                  binding.carbPer.text = this.resources.getString(
+                                      R.string.percentage_formatt,
+                                      decimalf.format(nut.percentOfDailyNeeds)
+                                  )
+                              }
+                              "Fat" -> {
+                                  Timber.e("Fats ${nut.percentOfDailyNeeds}")
+                                  binding.pgFat.progress = nut.percentOfDailyNeeds!!.toInt()
+                                  binding.fatAmount.text = nut.amount.toString()
+                                  binding.fatUnit.text = nut.unit
+                                  binding.fatPer.text = this.resources.getString(
+                                      R.string.percentage_formatt,
+                                      decimalf.format(nut.percentOfDailyNeeds)
+                                  )
+                              }
+                              "Protien" -> {
+                                  Timber.e("Protien ${nut.percentOfDailyNeeds}")
+                                  binding.pgProtien.progress = nut.percentOfDailyNeeds!!.toInt()
+                                  binding.proAmount.text = nut.amount.toString()
+                                  binding.proUnit.text = nut.unit
+                                  binding.proPer.text = this.resources.getString(
+                                      R.string.percentage_formatt,
+                                      decimalf.format(nut.percentOfDailyNeeds)
+                                  )
+                              }
+                              "Calories" -> {
+                                  Timber.e("Calories ${nut.percentOfDailyNeeds}")
+                                  binding.pgCal.progress = nut.percentOfDailyNeeds!!.toInt()
+                                  binding.calAmount.text = nut.amount.toString()
+                                  binding.calUnit.text = nut.unit
 
-             }
-             }
-
-
+                              }
+                          }
+                      }
+                      var url = detail?.sourceUrl
+                      binding.SeedetailRecipe.setOnClickListener {
+                          var intent = Intent(Intent.ACTION_VIEW)
+                          intent.data = Uri.parse(url)
+                          startActivity(intent)
+                      }
+                      detail?.extendedIngredients?.let { response ->
+                          adapter.setData(response)
+                      }
+                      var rating: Float = detail?.healthScore!!.toFloat() * 5 / 100
+                      binding.ratingBar.rating = rating
+                      detail.id?.let { it ->
+                          binding.seeDetailsIng.setOnClickListener { responce ->
+                              findNavController().navigate(
+                                  DetailFragmentDirections.actionDetailFragmentToListIngredientsFragment(
+                                      it
+                                  )
+                              )
+                          }
+                      }
+                  }
+              }
+              else -> {}
+          }
      })
 
     }
 
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
